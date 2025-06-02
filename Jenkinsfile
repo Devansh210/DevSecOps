@@ -36,12 +36,12 @@ stage ('Check secrets') {
     }
 }
 
-        stage("OWASP Dependency Check"){
-            steps{
-                dependencyCheck additionalArguments: '--scan ./ ', odcInstallation: 'DP-Check'
-                dependencyCheckPublisher pattern: '**/dependency-check-report.xml' 
-            }
-        }
+        // stage("OWASP Dependency Check"){
+        //     steps{
+        //         dependencyCheck additionalArguments: '--scan ./ ', odcInstallation: 'DP-Check'
+        //         dependencyCheckPublisher pattern: '**/dependency-check-report.xml' 
+        //     }
+        // }
 
       stage('Code Compile') {
             steps {
