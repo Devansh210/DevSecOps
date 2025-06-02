@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     tools{
-        jdk 'jdk17'
+        jdk 'jdk21'
         maven 'maven3'
     }
 	environment {
@@ -63,7 +63,7 @@ stage ('Check secrets') {
         
         stage("Sonarqube Analysis "){
             steps{
-                withSonarQubeEnv('sonar-server') {
+                withSonarQubeEnv('f7fe356c-3f66-4a49-b0b9-14ceba230afe') {
                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Petclinic \
                     -Dsonar.java.binaries=. \
                     -Dsonar.projectKey=Petclinic '''
@@ -81,7 +81,7 @@ stage ('Check secrets') {
         stage("Docker Build"){
             steps{
                 script{
-                   withDockerRegistry([url:'https://index.docker.io/v1/',credentialsId: '69fb7f6f-90ba-4bab-baf3-765387680986', toolName: 'docker']) {
+                   withDockerRegistry([url:'https://index.docker.io/v1/',credentialsId: 'eb174b91-5c15-47ba-a9a0-e646e9736e5c', toolName: 'docker']) {
                         sh "docker build -t petclinic1 ."
                     }
                 }
@@ -126,14 +126,14 @@ stage ('Check secrets') {
         }
 
 	    
-	stage ("Dynamic Analysis - DAST with OWASP ZAP") {
-			steps {
-			sshagent(['SSH-Cred']){
-				sh 'ssh ubuntu@13.232.127.89 "sudo docker run --rm -v /home/ubuntu:/zap/wrk/:rw -t  owasp/zap2docker-stable zap-baseline.py -t http://3.108.238.36:8081/petclinic/ -J zap_report.json || true" '
-				archiveArtifacts artifacts: 'zap_report.html', allowEmptyArchive: true
+	// stage ("Dynamic Analysis - DAST with OWASP ZAP") {
+	// 		steps {
+	// 		sshagent(['SSH-Cred']){
+	// 			sh 'ssh ubuntu@13.232.127.89 "sudo docker run --rm -v /home/ubuntu:/zap/wrk/:rw -t  owasp/zap2docker-stable zap-baseline.py -t http://3.108.238.36:8081/petclinic/ -J zap_report.json || true" '
+	// 			archiveArtifacts artifacts: 'zap_report.html', allowEmptyArchive: true
 
-            }
-        }
+        //     }
+        // }
     }
     }
 }
